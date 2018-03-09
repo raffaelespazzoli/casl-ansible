@@ -1,0 +1,14 @@
+---
+- name: remove registry object storage
+  shell: gsutil rm -r gs://openshift-{{ gcloud_env }}-registry
+  
+- name: remove managed zone
+  gcdns_zone: 
+    zone: "{{ gcloud_managed_zone }}"
+    state: absent
+    credentials_file: "{{ credentials_file }}"
+    service_account_email: "{{ service_account_email }}"
+    project_id: "{{ project_id }}"  
+    
+- name: delete infrastructure
+  shell: gcloud deployment-manager deployments delete openshift-{{ gcloud_env }} --quiet    

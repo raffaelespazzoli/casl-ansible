@@ -1,0 +1,19 @@
+---
+
+- name: upload image if necessary
+  pause:
+    seconds: 1
+
+- name: create infrastructure
+  include_tasks: create-infrastructure.yaml
+  
+- name: add dns entries
+  include_tasks: add-dns-entries.yaml  
+  
+- name: create registry object storage
+  include_tasks: create-registry-object-storage.yaml  
+
+- name: set post provisioning facts
+  include_tasks: set-post-provisioning-facts.yaml  
+  
+           

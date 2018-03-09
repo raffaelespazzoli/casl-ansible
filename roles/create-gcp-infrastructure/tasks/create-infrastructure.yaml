@@ -1,0 +1,36 @@
+---
+- name: create a temp directory fror the google templates
+  file:
+    path: /tmp/gcp_templates
+    state: directory
+    mode: 0755 
+
+- name: create the google template 
+  template:
+    src: ./templates/openshift-gcloud.yaml.j2
+    dest: /tmp/gcp_templates/openshift-gcloud.yaml            
+
+- name: check if google deployment exists
+  shell: gcloud deployment-manager deployments list 2>&1 | grep openshift-{{ gcloud_env }}
+  register: deployment
+  failed_when: deployment.rc|int > 1
+  changed_when: false
+  
+- name: update deployment existing deployment if it exists
+  shell: gcloud deployment-manager deployments update openshift-{{ gcloud_env }} --config /tmp/gcp_templates/openshift-gcloud.yaml  
+  when: deployment.stdout 
+    
+- name: create deployment if it doesn't exist
+  shell: gcloud deployment-manager deployments create openshift-{{ gcloud_env }} --config /tmp/gcp_templates/openshift-gcloud.yaml
+  when: not deployment.stdout  
+  
+- name: add instances to instance groups (not supported by templates)
+  shell: gcloud compute instance-groups unmanaged add-instances {{ "master-"~gcloud_masters_zones[ (item|int % gcloud_masters_zones.__len__()) - 1 ]~"-ig" }} --instances {{ gcloud_masters_name_prefix ~ item|int }} --zone {{ gcloud_masters_zones[ (item|int % gcloud_masters_zones.__len__()) - 1 ] }}
+  with_sequence: start=1 end="{{ gcloud_masters_num|int }}"
+  register: result
+  failed_when: not ((result.rc == 0) or ("is already a member of" in result.stderr))
+  changed_when: not ("is already a member of" in result.stderr)
+  
+  
+  
+   
