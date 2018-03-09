@@ -30,7 +30,7 @@ gcloud_infranodes_docker_volume_size: "{{ casl_instances.infranodes.docker_volum
 
 gcloud_region: "{{ casl_instances.region }}"
 gcloud_project_name: "{{ project_id }}"
-gcloud_managed_zone: "{{ env_id }}.{{ public_dns_domain }}"
+gcloud_managed_zone: "{{ public_dns_domain }}"
 gcloud_env: "{{ env_id }}"
 gcloud_master_external_fqdn: "{{ openshift_master_cluster_public_hostname }}"
 gcloud_master_internal_fqdn: "{{ openshift_master_cluster_hostname }}"
