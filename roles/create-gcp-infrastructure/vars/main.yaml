@@ -35,4 +35,5 @@ gcloud_env: "{{ env_id }}"
 gcloud_master_external_fqdn: "{{ openshift_master_cluster_public_hostname }}"
 gcloud_master_internal_fqdn: "{{ openshift_master_cluster_hostname }}"
 gcloud_infranode_wildcard_fqdn: "*.{{ openshift_master_default_subdomain }}"
+gcloud_docker_volume_name: docker-storage
 
