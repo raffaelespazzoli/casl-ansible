@@ -1,5 +1,9 @@
 # CASL Google cloud provider setup instructions
 
+The following instruction will deploy an architecture close to the one in the picture. The main differences are that there is no bastion host and that also nodes are spread across network zones.
+
+![GCP reference architecture](./media/OSE-on-GCE-Architecture-v0.3.png)
+
 ## Google Cloud Platform preparation
 
 ### Create an account
@@ -46,7 +50,7 @@ take note of the service account id (it will look like an email address). We wil
 
 ## Ansible host preparation
 
-Install the following software
+Install the following software:
 
 ```yum install ansible```
 ```pip install apache-libcloud```
@@ -65,7 +69,7 @@ ansible-galaxy install -r casl-requirements.yml -p roles
 ### Configure gcp dynamic inventory
 
 Refer to this link on all the options for configuring gcp dynamic invetory to the [offical doc](http://docs.ansible.com/ansible/latest/guide_gce.html).
-Also refer to the provided example [inventory]().
+Also refer to the provided example [inventory](../inventory/sample.gcp.example.com.d/inventory).
 The minimum that you have to do is to have the `gce.py` script and the `gce.ini` config in you inventory root.
 In `gce.ini` edit the following configuration:
 ```
@@ -74,7 +78,7 @@ gce_service_account_pem_file_path = $gcp_sa_json
 gce_project_id = $gcp_project
 ```
 
-To test that dynamic invetory is working run the following from your inventory directory:
+To test that dynamic inventory is working run the following from your inventory directory:
 ```
 ./gce.py --list
 ```
@@ -83,7 +87,7 @@ To test that dynamic invetory is working run the following from your inventory d
 
 ### Mandatory gcp-related properties
 
-refere to the example [inventory]().
+refere to the example [inventory](../inventory/sample.gcp.example.com.d/inventory).
 the following casl-general configuration must be provided in the all.yaml
 ```
 ansible_user: $gcp_user
@@ -168,7 +172,14 @@ for the host layout see the example and replace the suffixes with your `env_id`.
 
 In order to run the playbook run the following:
 ```
-ansible-playbook -i <inventory_dir> --private-key=<private key for $gcp_user> <ansible_dir>/playbooks/openshift/end-to-end.yml
+ansible-playbook -i <inventory_dir> --private-key=<private key for $gcp_user> <casl_ansible_dir>/playbooks/openshift/end-to-end.yml
 ```
+
+# Cleaning up
+In order to clean up run this plyabook
+```
+ansible-playbook -i <inventory_dir> --private-key=<private key for $gcp_user> <casl_ansible_dir>/playbooks/openshift/gcp/cleanup.yaml
+```
+
 
 
