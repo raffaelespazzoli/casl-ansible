@@ -1,0 +1,7 @@
+- hosts: localhost
+  connection: local
+  include_role:
+    name:  create-gcp-infrastrcuture
+    tasks_from: "{{ item }}"
+    with_items:
+    - cleanup.yml

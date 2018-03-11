@@ -36,4 +36,8 @@ gcloud_master_external_fqdn: "{{ openshift_master_cluster_public_hostname }}"
 gcloud_master_internal_fqdn: "{{ openshift_master_cluster_hostname }}"
 gcloud_infranode_wildcard_fqdn: "*.{{ openshift_master_default_subdomain }}"
 gcloud_docker_volume_name: docker-storage
+gcloud_vm_disk_size: 40
+gcloud_sed_expression1: "'s/\"filesystem:\"/\"gcs:\"/g'" 
+gcloud_sed_expression2: "'s/\"rootdirectory: /registry\"/\"bucket: openshift-{{ gcloud_env }}-registry\"/g'"
+
 

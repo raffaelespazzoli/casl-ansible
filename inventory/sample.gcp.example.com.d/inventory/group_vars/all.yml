@@ -1,0 +1,72 @@
+#casl standard properties
+
+host_key_checking: False
+ansible_user: <your ssh key user>
+ansible_become: true
+#forks: "{{ casl_instances.masters.count + casl_instances.appnodes.count + asl_instances.infranodes.count + 1 }}"
+#pipelining: true
+
+hosting_infrastructure: gcp
+public_dns_domain: <your domain>
+env_id: env1
+
+casl_instances:
+   region: us-central1
+   image_name: rhel7
+   masters: 
+     count: 3
+     flavor: n1-standard-2
+     zones: 
+     - us-central1-a
+     - us-central1-b
+     - us-central1-f
+     name_prefix: master
+     preemptible: false
+     docker_volume_size: 12
+   appnodes: 
+     count: 3
+     flavor: n1-standard-2
+     zones: 
+     - us-central1-a
+     - us-central1-b
+     - us-central1-f
+     name_prefix: node
+     preemptible: false
+     docker_volume_size: 50
+   infranodes: 
+     count: 3
+     flavor: n1-standard-2
+     zones: 
+     - us-central1-a
+     - us-central1-b
+     - us-central1-f
+     name_prefix: infranode          
+     preemptible: false
+     docker_volume_size: 20
+
+# docker_storage_block_device: "/dev/vdb"
+
+# NOTE: If you do not have access to an internal satellite server, use the "rhsm_username" and "rhsm_password" to subscribe to redhat.com and your account available there. Make sure to use an account that has v$
+rhsm_username: <your rhn username>
+rhsm_password: <your rhn password>
+rhsm_register: true
+rhsm_pool: <your pool>
+
+rhsm_repos:
+ - "rhel-7-server-rpms"
+ - "rhel-7-server-ose-3.7-rpms"
+ - "rhel-7-server-extras-rpms"
+ - "rhel-7-fast-datapath-rpms"
+ - "rhel-7-server-optional-rpms"
+
+#google specific properties
+service_account_email: <your google service account>
+credentials_file: <your account key file in json format>
+project_id: <your project>
+
+#openshift_master_cluster_public_hostname must be something like <prefix>.{{ env_id }}.{{ public_dns_domain }}
+openshift_master_cluster_public_hostname: master.{{ env_id }}.{{ public_dns_domain }}
+#openshift_master_cluster_hostname must be something like <prefix>.{{ env_id }}.{{ public_dns_domain }}
+openshift_master_cluster_hostname: master-internal.{{ env_id }}.{{ public_dns_domain }}
+#openshift_master_default_subdomain must be something like <prefix>.{{ env_id }}.{{ public_dns_domain }}
+openshift_master_default_subdomain: apps.{{ env_id }}.{{ public_dns_domain }}

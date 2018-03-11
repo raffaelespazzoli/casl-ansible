@@ -74,6 +74,11 @@ gce_service_account_pem_file_path = $gcp_sa_json
 gce_project_id = $gcp_project
 ```
 
+To test that dynamic invetory is working run the following from your inventory directory:
+```
+./gce.py --list
+```
+
 ## Inventory configuration
 
 ### Mandatory gcp-related properties

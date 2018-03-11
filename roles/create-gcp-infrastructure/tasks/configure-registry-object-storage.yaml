@@ -1,0 +1,77 @@
+---
+- name: retrieve the name of one registry pod
+  shell: oc get pod -l deploymentconfig=docker-registry | grep -m 1 registry | awk '{print $1}'
+  register: pod  
+  
+- name: create a temp directory fror the google templates
+  file:
+    path: /tmp/gcp_templates
+    state: directory
+    mode: 0755  
+  
+- name: retrieve the configuration file
+  shell: oc rsync docker-registry-1-thnlk:/config.yml /tmp/gcp_templates -n default
+    
+- name: replace with google object storage configuration 1
+#  shell: "sed -i {{ gcloud_sed_expression1 }} /tmp/gcp_templates/config.yml && sed -i {{ gcloud_sed_expression2 }} /tmp/gcp_templates/config.yml"  
+  lineinfile:
+    path: /tmp/gcp_templates/config.yml
+    regexp: "filesystem"
+    state: present
+    line: "  gcs:" 
+
+- name: replace with google object storage configuration 2
+#  shell: "sed -i {{ gcloud_sed_expression1 }} /tmp/gcp_templates/config.yml && sed -i {{ gcloud_sed_expression2 }} /tmp/gcp_templates/config.yml"  
+  lineinfile:
+    path: /tmp/gcp_templates/config.yml
+    regexp: "rootdirectory"
+    state: present
+    line: "    bucket: openshift-{{ gcloud_env }}-registry"   
+
+#- name: replace with google object storage configuration 3
+##  shell: "sed -i {{ gcloud_sed_expression1 }} /tmp/gcp_templates/config.yml && sed -i {{ gcloud_sed_expression2 }} /tmp/gcp_templates/config.yml"  
+#  lineinfile:
+#    path: /tmp/gcp_templates/config.yml
+#    line: "  gcs:"
+#    state: present
+#    instertafter: "storage:"
+#    
+#- name: replace with google object storage configuration 4
+##  shell: "sed -i {{ gcloud_sed_expression1 }} /tmp/gcp_templates/config.yml && sed -i {{ gcloud_sed_expression2 }} /tmp/gcp_templates/config.yml"  
+#  lineinfile:
+#    path: /tmp/gcp_templates/config.yml
+#    line: "    bucket: openshift-{{ gcloud_env }}-registry"
+#    state: present
+#    instertafter: "  gcs:"         
+  
+- name: check if configmap exists
+  shell: oc get configmap registry-config -n default | grep registry-config  
+  register: configmap
+  changed_when: false
+  failed_when: not (configmap.rc == 0 or configmap.rc == 1)
+  
+- name: delete configmap if it exists
+  shell: oc delete configmap registry-config -n default
+  when: configmap.stdout  
+  
+- name: create configmap with new config
+  shell: oc create configmap registry-config --from-file=/tmp/gcp_templates/config.yml -n default
+  
+- name: check if current registry storage exists  
+  shell: oc set volume dc/docker-registry -n default | grep registry-storage
+  register: registry_storage
+  changed_when: false
+  failed_when: not (registry_storage.rc == 0 or registry_storage.rc == 1)
+  
+- name: remove current registry storage if present
+  shell: oc set volume dc/docker-registry --remove --name=registry-storage -n default
+  when: registry_storage.stdout
+  
+- name: add new config map
+  shell: oc set volume dc/docker-registry --overwrite --add --type=configmap --configmap-name=registry-config -m /etc/docker/registry/ -n default
+  
+- name: set new config file in registry deployment config
+  shell: oc set env dc/docker-registry REGISTRY_CONFIGURATION_PATH=/etc/docker/registry/config.yml -n default
+  
+- name: redeploy registry
+  shell: oc rollout latest dc/docker-registry -n default  

@@ -21,7 +21,7 @@ resources:
       boot: true
       autoDelete: true
       initializeParams:
-        diskSizeGb: 20
+        diskSizeGb: {{ gcloud_vm_disk_size }}
         sourceImage: https://www.googleapis.com/compute/v1/projects/rhel-cloud/global/images/family/rhel-7        
     - deviceName: {{ gcloud_docker_volume_name }}
       boot: false
@@ -78,7 +78,7 @@ resources:
       boot: true
       autoDelete: true
       initializeParams:
-        diskSizeGb: 20
+        diskSizeGb: {{ gcloud_vm_disk_size }}
         sourceImage: https://www.googleapis.com/compute/v1/projects/rhel-cloud/global/images/family/rhel-7        
     - deviceName: {{ gcloud_docker_volume_name }}
       boot: false
@@ -128,7 +128,7 @@ resources:
       boot: true
       autoDelete: true
       initializeParams:
-        diskSizeGb: 20
+        diskSizeGb: {{ gcloud_vm_disk_size }}
         sourceImage: https://www.googleapis.com/compute/v1/projects/rhel-cloud/global/images/family/rhel-7        
     - deviceName: {{ gcloud_docker_volume_name }}
       boot: false
