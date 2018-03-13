@@ -11,3 +11,4 @@
 - import_playbook: ../../galaxy/openshift-applier/playbooks/openshift-cluster-seed.yml
   when:
   - openshift_cluster_content is defined
+

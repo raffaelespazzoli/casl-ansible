@@ -1,7 +1,7 @@
 - hosts: localhost
   connection: local
   roles:
-  - role: create-gcp-infrastructure
+  - role: manage-gcp-infra
 
 - name: Refresh Server inventory
   hosts: localhost

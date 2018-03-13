@@ -52,8 +52,10 @@ take note of the service account id (it will look like an email address). We wil
 
 Install the following software:
 
-```yum install ansible```
-```pip install apache-libcloud```
+```
+yum install ansible
+pip install apache-libcloud
+```
 
 follow these [instructions](https://cloud.google.com/sdk/downloads#yum) to install the gcp CLI (`gcloud`).
 
@@ -178,7 +180,7 @@ ansible-playbook -i <inventory_dir> --private-key=<private key for $gcp_user> <c
 # Cleaning up
 In order to clean up run this plyabook
 ```
-ansible-playbook -i <inventory_dir> --private-key=<private key for $gcp_user> <casl_ansible_dir>/playbooks/openshift/gcp/cleanup.yaml
+ansible-playbook -i <inventory_dir> --private-key=<private key for $gcp_user> <casl_ansible_dir>/playbooks/openshift/gcp/delete.yaml
 ```
 
 

@@ -3,5 +3,5 @@
   tasks:
   - name: cleanup
     include_role:
-      name:  create-gcp-infrastructure
+      name:  manage-gcp-infra
       tasks_from: cleanup.yaml
