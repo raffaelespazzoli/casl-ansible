@@ -65,7 +65,8 @@ osm_default_node_selector: 'region=primary'
 
 openshift_docker_options: "--log-driver=json-file --log-opt max-size=50m --log-opt max-file=100"
 
-openshift_cloudprovider_kind: gcp
+openshift_cloudprovider_kind: gce
+openshift_gcp_project: united-sandbox-151818
 
 os_sdn_network_plugin_name: 'redhat/openshift-ovs-networkpolicy'
 #os_sdn_network_plugin_name: 'redhat/openshift-ovs-multitenant'

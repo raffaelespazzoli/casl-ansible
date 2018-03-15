@@ -177,6 +177,25 @@ In order to run the playbook run the following:
 ansible-playbook -i <inventory_dir> --private-key=<private key for $gcp_user> <casl_ansible_dir>/playbooks/openshift/end-to-end.yml
 ```
 
+## Running the playbook from the openshift-ansible container
+You can run the gcp install directly from the openshift-anbile container.
+Checkout the version of casl that you want to use and run the galaxy command:
+```
+git clone https://github.com/redhat-cop/casl-ansible
+cd casl-ansible
+ansible-galaxy install -r casl-requirements.yml -p roles
+```
+at this point you can run the playbook this way:
+```
+docker run -t -u `id -u` -v /home/rspazzol/.gcp:/home/rspazzol/.gcp:Z \
+                         -v $HOME/.ssh/id_rsa:/opt/app-root/src/.ssh/id_rsa:Z \
+                         -v /home/rspazzol/git/openshift-enablement-exam/cloud-deployment/ansible/inventory:/tmp/inventory:Z \
+                         -v <casl_dir>:/tmp/<casl_dir>:z \ 
+                         -e INVENTORY_FILE=/tmp/inventory \
+                         -e PLAYBOOK_FILE=/tmp/<casl_dir>/playbooks/openshift/end-to-end.yml \ 
+                         -e OPTS="-vv" openshift3/ose-ansible:<your version>
+```                        
+
 # Cleaning up
 In order to clean up run this plyabook
 ```
