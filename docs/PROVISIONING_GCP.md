@@ -10,17 +10,17 @@ The following instruction will deploy an architecture close to the one in the pi
 
 Sign up for google cloud. It can be done [here](https://console.cloud.google.com/freetrial).
 
-### Consider requesting additional quota
-
-Initial quota for a google cloud accoutn will not allow you to install an HA OpenShift cluster (at least last time I checked).
-Conside requesting additional quotas [here](https://console.cloud.google.com/iam-admin/quotas). Click on the edit quota button. 
-Keep in mind that this process can take a few days.
-
 ### Create a project
 
 Create a gcp project.
 The project id (not name) will be hencefort referred to as `$gcp_project`.
 All the below actions must be executed in the content of this project.
+
+### Consider requesting additional quota
+
+Initial quota for a google cloud project may not allow you to install an HA OpenShift cluster (at least last time I checked).
+Conside requesting additional quotas [here](https://console.cloud.google.com/iam-admin/quotas). Click on the edit quota button. 
+Keep in mind that this process can take a few days.
 
 ### Configure DNS domain
 
@@ -45,6 +45,7 @@ You also have to define a user for this key. We will refer to this user hnecefor
 ### Configure the gcp service account
 
 Create a service account by going [here](https://console.cloud.google.com/iam-admin/serviceaccounts).
+Your service account should have the `editor` role.
 Download the json file to a secure location. We will refer to that loaction as `$gcp_sa_json`.
 take note of the service account id (it will look like an email address). We will refer to it as `$gcp_sa_id`.
 
