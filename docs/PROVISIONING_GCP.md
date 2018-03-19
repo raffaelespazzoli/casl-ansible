@@ -197,6 +197,14 @@ docker run -t -u `id -u` -v <gcp keyfile.json location>:<gcp keyfile.json locati
                          -e OPTS="-vv" openshift/origin-ansible:<your version>
 ```                        
 
+## Configuring the registry to use gcp object storage
+The end to end playbook will configure the regsitry to use the gcp object storage.
+If you need to execute this operation separately, you can run the following command:
+```
+ansible-playbook -i <inventory_dir> --private-key=<private key for $gcp_user> <casl_ansible_dir>/playbooks/openshift/gcp/configure-registry.yml
+```
+
+
 # Cleaning up
 In order to clean up run this plyabook
 ```

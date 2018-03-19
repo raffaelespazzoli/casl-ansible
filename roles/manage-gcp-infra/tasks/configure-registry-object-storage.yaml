@@ -10,7 +10,7 @@
     mode: 0755  
   
 - name: retrieve the configuration file
-  shell: oc rsync docker-registry-1-thnlk:/config.yml /tmp/gcp_templates -n default
+  shell: oc rsync {{ pod.stdout }}:/config.yml /tmp/gcp_templates -n default
     
 - name: replace with google object storage configuration 1
 #  shell: "sed -i {{ gcloud_sed_expression1 }} /tmp/gcp_templates/config.yml && sed -i {{ gcloud_sed_expression2 }} /tmp/gcp_templates/config.yml"  
@@ -26,23 +26,7 @@
     path: /tmp/gcp_templates/config.yml
     regexp: "rootdirectory"
     state: present
-    line: "    bucket: openshift-{{ gcloud_env }}-registry"   
-
-#- name: replace with google object storage configuration 3
-##  shell: "sed -i {{ gcloud_sed_expression1 }} /tmp/gcp_templates/config.yml && sed -i {{ gcloud_sed_expression2 }} /tmp/gcp_templates/config.yml"  
-#  lineinfile:
-#    path: /tmp/gcp_templates/config.yml
-#    line: "  gcs:"
-#    state: present
-#    instertafter: "storage:"
-#    
-#- name: replace with google object storage configuration 4
-##  shell: "sed -i {{ gcloud_sed_expression1 }} /tmp/gcp_templates/config.yml && sed -i {{ gcloud_sed_expression2 }} /tmp/gcp_templates/config.yml"  
-#  lineinfile:
-#    path: /tmp/gcp_templates/config.yml
-#    line: "    bucket: openshift-{{ gcloud_env }}-registry"
-#    state: present
-#    instertafter: "  gcs:"         
+    line: "    bucket: openshift-{{ gcloud_env }}-registry"           
   
 - name: check if configmap exists
   shell: oc get configmap registry-config -n default | grep registry-config  
@@ -67,8 +51,14 @@
   shell: oc set volume dc/docker-registry --remove --name=registry-storage -n default
   when: registry_storage.stdout
   
+- name: check if configmap currently mounted
+  shell: oc set volume dc/docker-registry -n default | grep "/etc/docker/registry"
+  register: registry_config
+  changed_when: false
+  failed_when: not (registry_config.rc == 0 or registry_config.rc == 1)  
+  
 - name: add new config map
-  shell: oc set volume dc/docker-registry --overwrite --add --type=configmap --configmap-name=registry-config -m /etc/docker/registry/ -n default
+  shell: oc set volume dc/docker-registry {% if registry_config.stdout %} --overwrite {% endif %} --add --type=configmap --configmap-name=registry-config -m /etc/docker/registry/ -n default
   
 - name: set new config file in registry deployment config
   shell: oc set env dc/docker-registry REGISTRY_CONFIGURATION_PATH=/etc/docker/registry/config.yml -n default
