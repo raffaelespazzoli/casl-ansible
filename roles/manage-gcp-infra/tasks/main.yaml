@@ -8,10 +8,7 @@
   include_tasks: create-infrastructure.yaml
   
 - name: add dns entries
-  include_tasks: add-dns-entries.yaml  
-  
-- name: create registry object storage
-  include_tasks: create-registry-object-storage.yaml  
+  include_tasks: add-dns-entries.yaml   
 
 - name: set post provisioning facts
   include_tasks: set-post-provisioning-facts.yaml  

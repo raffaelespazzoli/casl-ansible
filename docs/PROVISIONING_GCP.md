@@ -188,13 +188,13 @@ ansible-galaxy install -r casl-requirements.yml -p roles
 ```
 at this point you can run the playbook this way:
 ```
-docker run -t -u `id -u` -v /home/rspazzol/.gcp:/home/rspazzol/.gcp:Z \
-                         -v $HOME/.ssh/id_rsa:/opt/app-root/src/.ssh/id_rsa:Z \
-                         -v /home/rspazzol/git/openshift-enablement-exam/cloud-deployment/ansible/inventory:/tmp/inventory:Z \
-                         -v <casl_dir>:/tmp/<casl_dir>:z \ 
-                         -e INVENTORY_FILE=/tmp/inventory \
-                         -e PLAYBOOK_FILE=/tmp/<casl_dir>/playbooks/openshift/end-to-end.yml \ 
-                         -e OPTS="-vv" openshift3/ose-ansible:<your version>
+docker run -t -u `id -u` -v <gcp keyfile.json location>:<gcp keyfile.json location>:Z,ro \
+                         -v <ssh keyfile>:/opt/app-root/src/.ssh/id_rsa:Z,ro \
+                         -v <your inventory>:/tmp/inventory:Z,ro \
+                         -v <casl_dir>:/tmp/casl-ansible:Z,ro \ 
+                         -e INVENTORY_DIR=/tmp/inventory \
+                         -e PLAYBOOK_FILE=/tmp/casl-ansible/playbooks/openshift/end-to-end.yml \ 
+                         -e OPTS="-vv" openshift/origin-ansible:<your version>
 ```                        
 
 # Cleaning up

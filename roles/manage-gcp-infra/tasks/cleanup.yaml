@@ -8,12 +8,9 @@
   
 - name: setup gcloud authenticationn
   shell: gcloud auth activate-service-account --key-file {{ credentials_file }} --project {{ gcloud_project_name }}
-
-- name: remove registry object storage
-  shell: gsutil rm -r gs://openshift-{{ gcloud_env }}-registry
   
 - name: retrieve master public ip
-  shell: gcloud compute addresses list --format json --filter name=master-external-{{ gcloud_env }} | jq -r .[].address
+  shell: gcloud compute addresses list --format json --filter name=master-external-{{ gcloud_env }}
   register: master_external
   changed_when: false     
 
@@ -22,7 +19,7 @@
     record: "{{ gcloud_master_external_fqdn }}"
     zone: "{{ gcloud_managed_zone }}"
     type: A
-    value: "{{ master_external.stdout }}"
+    value: "{{ (master_external.stdout | from_json)[0].address }}"
     overwrite: true
     credentials_file: "{{ credentials_file }}"
     service_account_email: "{{ service_account_email }}"
@@ -30,7 +27,7 @@
     state: absent    
     
 - name: retrieve master internal ip
-  shell: gcloud compute forwarding-rules list --format json --filter name=master-internal-fwr-{{ gcloud_env }} | jq -r .[].IPAddress
+  shell: gcloud compute forwarding-rules list --format json --filter name=master-internal-fwr-{{ gcloud_env }}
   register: master_internal
   changed_when: false        
     
@@ -39,7 +36,7 @@
     record: "{{ gcloud_master_internal_fqdn }}"
     zone: "{{ gcloud_managed_zone }}"
     type: A
-    value: "{{ master_internal.stdout }}"
+    value: "{{ (master_internal.stdout | from_json)[0].IPAddress }}"
     overwrite: true
     credentials_file: "{{ credentials_file }}"
     service_account_email: "{{ service_account_email }}"
@@ -47,7 +44,7 @@
     state: absent    
     
 - name: retrieve master public ip
-  shell: gcloud compute addresses list --format json --filter name=infranode-external-{{ gcloud_env }} | jq -r .[].address
+  shell: gcloud compute addresses list --format json --filter name=infranode-external-{{ gcloud_env }}
   register: infranode_external
   changed_when: false    
     
@@ -56,7 +53,7 @@
     record: "{{ gcloud_infranode_wildcard_fqdn }}"
     zone: "{{ gcloud_managed_zone }}"
     type: A
-    value: "{{ infranode_external.stdout }}"
+    value: "{{ (infranode_external.stdout | from_json)[0].address }}"
     overwrite: true
     credentials_file: "{{ credentials_file }}"
     service_account_email: "{{ service_account_email }}"
