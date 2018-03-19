@@ -1,5 +1,4 @@
 ---
-
 - name: setup gcloud configuration
   shell: gcloud config configurations create openshift-{{ gcloud_env }}
   register: result
@@ -24,7 +23,8 @@
     credentials_file: "{{ credentials_file }}"
     service_account_email: "{{ service_account_email }}"
     project_id: "{{ project_id }}"
-    state: absent    
+    state: absent
+  when: (master_external.stdout | from_json)      
     
 - name: retrieve master internal ip
   shell: gcloud compute forwarding-rules list --format json --filter name=master-internal-fwr-{{ gcloud_env }}
@@ -41,7 +41,8 @@
     credentials_file: "{{ credentials_file }}"
     service_account_email: "{{ service_account_email }}"
     project_id: "{{ project_id }}"
-    state: absent    
+    state: absent
+  when: (master_internal.stdout | from_json)    
     
 - name: retrieve master public ip
   shell: gcloud compute addresses list --format json --filter name=infranode-external-{{ gcloud_env }}
@@ -58,7 +59,15 @@
     credentials_file: "{{ credentials_file }}"
     service_account_email: "{{ service_account_email }}"
     project_id: "{{ project_id }}"
-    state: absent     
+    state: absent
+  when: (infranode_external.stdout | from_json)       
+
+- name: check if google deployment exists
+  shell: gcloud deployment-manager deployments list 2>&1 | grep openshift-{{ gcloud_env }}
+  register: deployment
+  failed_when: deployment.rc|int > 1
+  changed_when: false
     
 - name: delete infrastructure
-  shell: gcloud deployment-manager deployments delete openshift-{{ gcloud_env }} --quiet    
+  shell: gcloud deployment-manager deployments delete openshift-{{ gcloud_env }} --quiet
+  when: deployment.stdout       
