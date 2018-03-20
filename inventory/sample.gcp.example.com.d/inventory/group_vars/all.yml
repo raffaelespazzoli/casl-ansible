@@ -1,14 +1,20 @@
-#casl standard properties
+---
 
-host_key_checking: False
+# 'hosting_infrastructure' is used to drive the correct behavior based
+# on the hosting infrastructure, cloud provider, etc. Valid values are:
+# - 'openstack'
+# - 'aws'
+# - 'azure' (Coming Soon)
+# - 'gcp'
+hosting_infrastructure: gcp
+
+# Cluster Environment ID to uniquely identify the environment
+env_id: env1
+
 ansible_user: <your ssh key user>
 ansible_become: true
-#forks: "{{ casl_instances.masters.count + casl_instances.appnodes.count + asl_instances.infranodes.count + 1 }}"
-#pipelining: true
 
-hosting_infrastructure: gcp
-public_dns_domain: <your domain>
-env_id: env1
+dns_domain: "<REPLACE WITH A VALID ROUTE53 DNS DOMAIN>"
 
 casl_instances:
    region: us-central1
@@ -46,27 +52,37 @@ casl_instances:
 
 # docker_storage_block_device: "/dev/vdb"
 
-# NOTE: If you do not have access to an internal satellite server, use the "rhsm_username" and "rhsm_password" to subscribe to redhat.com and your account available there. Make sure to use an account that has v$
-rhsm_username: <your rhn username>
-rhsm_password: <your rhn password>
-rhsm_register: true
-rhsm_pool: <your pool>
-
+# Subscription Management Details
+rhsm_register: True
 rhsm_repos:
  - "rhel-7-server-rpms"
  - "rhel-7-server-ose-3.7-rpms"
  - "rhel-7-server-extras-rpms"
  - "rhel-7-fast-datapath-rpms"
- - "rhel-7-server-optional-rpms"
+ - "rhel-server-rhscl-7-rpms"
+
+
+# Use RHSM username, password and optionally pool:
+# NOTE: use the -e option to specify on CLI instead of statically set here
+rhsm_username: '<REPLACE WITH VALID RHSM USERNAME>'
+rhsm_password: '<REPLACE WITH VALID RHSM PASSWORD>'
+
+# leave commented out if you want to `--auto-attach` a pool
+#rhsm_pool: ''
 
 #google specific properties
 service_account_email: <your google service account>
 credentials_file: <your account key file in json format>
 project_id: <your project>
 
-#openshift_master_cluster_public_hostname must be something like <prefix>.{{ env_id }}.{{ public_dns_domain }}
-openshift_master_cluster_public_hostname: master.{{ env_id }}.{{ public_dns_domain }}
-#openshift_master_cluster_hostname must be something like <prefix>.{{ env_id }}.{{ public_dns_domain }}
-openshift_master_cluster_hostname: master-internal.{{ env_id }}.{{ public_dns_domain }}
-#openshift_master_default_subdomain must be something like <prefix>.{{ env_id }}.{{ public_dns_domain }}
-openshift_master_default_subdomain: apps.{{ env_id }}.{{ public_dns_domain }}
+# openshift_master_cluster_public_hostname must be something like:
+#   <prefix>.{{ env_id }}.{{ dns_domain }}
+openshift_master_cluster_public_hostname: master.{{ env_id }}.{{ dns_domain }}
+
+# openshift_master_cluster_hostname must be something like:
+#   <prefix>.{{ env_id }}.{{ dns_domain }}
+openshift_master_cluster_hostname: master-internal.{{ env_id }}.{{ dns_domain }}
+
+# openshift_master_default_subdomain must be something like:
+#   <prefix>.{{ env_id }}.{{ dns_domain }}
+openshift_master_default_subdomain: apps.{{ env_id }}.{{ dns_domain }}

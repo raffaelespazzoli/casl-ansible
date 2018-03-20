@@ -1,4 +1,5 @@
 ---
+
 - name: setup gcloud configuration
   shell: gcloud config configurations create openshift-{{ gcloud_env }}
   register: result
@@ -71,3 +72,4 @@
 - name: delete infrastructure
   shell: gcloud deployment-manager deployments delete openshift-{{ gcloud_env }} --quiet
   when: deployment.stdout       
+

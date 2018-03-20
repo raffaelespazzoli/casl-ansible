@@ -1,4 +1,5 @@
 ---
+
 - name: retrieve the name of one registry pod
   shell: oc get pod -l deploymentconfig=docker-registry | grep -m 1 registry | awk '{print $1}'
   register: pod  
@@ -65,3 +66,4 @@
   
 - name: redeploy registry
   shell: oc rollout latest dc/docker-registry -n default  
+

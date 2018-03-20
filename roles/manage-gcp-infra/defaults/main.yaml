@@ -1,21 +1,41 @@
-# name prefix
-casl_instances.masters.name_prefix: master
-casl_instances.appnodes.name_prefix: node
-casl_instances.infranodes.name_prefix: infranode
+---
 
-# name flavor
-casl_instances.masters.flavor: n1-standard-2
-casl_instances.appnodes.flavor: n1-standard-2
-casl_instances.infranodes.flavor: n1-standard-2
+# default name prefix
+casl_instances:
+  masters:
+    name_prefix: master
+  appnodes:
+    name_prefix: node
+  infranodes:
+    name_prefix: infranode
 
-#preemptitability
-casl_instances.masters.preemptible: false
-casl_instances.appnodes.preemptible: false
-casl_instances.infranodes.preemptible: false 
+# default instance flavors
+casl_instances:
+  masters:
+    flavor: n1-standard-2
+  appnodes:
+    flavor: n1-standard-2
+  infranodes:
+    flavor: n1-standard-2
 
-#docker volume size
-casl_instances.masters.docker_volume_size: 10
-casl_instances.appnodes.docker_volume_size: 50
-casl_instances.infranodes.docker_volume_size: 20
+# default preemptibility
+casl_instances:
+  masters:
+    preemptible: false
+  appnodes:
+    preemptible: false
+  infranodes:
+    preemptible: false 
 
-casl_instances.image_name: rhel7
+# default docker volume size
+casl_instances:
+  masters:
+    docker_volume_size: 10
+  appnodes:
+    docker_volume_size: 50
+  infranodes:
+    docker_volume_size: 20
+
+# default image name
+casl_instances:
+  image_name: rhel7
