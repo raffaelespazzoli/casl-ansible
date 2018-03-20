@@ -1,9 +1,4 @@
 ---
-
-- name: upload image if necessary
-  pause:
-    seconds: 1
-
 - name: create infrastructure
   include_tasks: create-infrastructure.yaml
   
