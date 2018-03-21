@@ -9,6 +9,6 @@
   when: hosting_infrastructure == "aws"
 
 # Provision gcp Instances
-- import_playbook: gcp/provision.yaml
+- import_playbook: gcp/provision.yml
   when: hosting_infrastructure == "gcp"
 

@@ -6,4 +6,4 @@
   - name: cleanup
     include_role:
       name:  manage-gcp-infra
-      tasks_from: cleanup.yaml
+      tasks_from: cleanup.yml

@@ -5,6 +5,5 @@
   - name: configure registry
     include_role:
       name:  manage-gcp-infra
-      tasks_from: configure-registry-object-storage.yaml
-    when: hosting_infrastructure == "gcp"
+      tasks_from: configure-registry-object-storage.yml
 
