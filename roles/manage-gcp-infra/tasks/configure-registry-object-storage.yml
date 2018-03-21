@@ -25,7 +25,7 @@
     path: "{{ tmpdir.path }}/config.yml"
     regexp: "rootdirectory"
     state: present
-    line: "    bucket: openshift-{{ gcloud_env }}-registry"           
+    line: "    bucket: {{ gcloud_registry_bucket_name }}"           
   
 - name: check if configmap exists
   shell: oc get configmap {{ gcloud_registry_configmap_name }} -n default | grep {{ gcloud_registry_configmap_name }}  

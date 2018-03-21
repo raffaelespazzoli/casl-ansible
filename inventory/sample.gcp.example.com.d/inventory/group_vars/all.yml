@@ -75,6 +75,10 @@ service_account_email: <your google service account>
 credentials_file: <your account key file in json format>
 project_id: <your project>
 
+# google object storage bucket name for the registry
+# suggested value: openshift-registry-{{ env_id }}-{{ project_id }}
+google_registry_bucket_name: openshift-registry-{{ env_id }}-{{ project_id }}
+
 # openshift_master_cluster_public_hostname must be something like:
 #   <prefix>.{{ env_id }}.{{ dns_domain }}
 openshift_master_cluster_public_hostname: master.{{ env_id }}.{{ dns_domain }}

@@ -261,7 +261,7 @@ resources:
     loadBalancingScheme: INTERNAL
     backendService: $(ref.master-internal-bs-{{ gcloud_env }}.selfLink)
     
-- name: openshift-{{ gcloud_env }}-registry
+- name: {{ gcloud_registry_bucket_name }} 
   properties:
     location: {{ gcloud_region }}
   type: storage.v1.bucket    

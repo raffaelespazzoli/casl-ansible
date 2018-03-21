@@ -39,6 +39,6 @@ gcloud_master_internal_fqdn: "{{ openshift_master_cluster_hostname }}"
 gcloud_infranode_wildcard_fqdn: "*.{{ openshift_master_default_subdomain }}"
 gcloud_docker_volume_name: docker-storage
 gcloud_vm_disk_size: 50
-gcloud_regsitry_configmap_name: registry-config
-
+gcloud_registry_configmap_name: registry-config
+gcloud_registry_bucket_name: {{ google_registry_bucket_name }} 
 
