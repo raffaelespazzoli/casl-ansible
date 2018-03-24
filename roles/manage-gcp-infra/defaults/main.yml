@@ -1,7 +1,7 @@
 ---
 
 # default name prefix
-casl_instances:
+cloud_infrastructure:
   masters:
     name_prefix: master
   appnodes:
@@ -10,7 +10,7 @@ casl_instances:
     name_prefix: infranode
 
 # default instance flavors
-casl_instances:
+cloud_infrastructure:
   masters:
     flavor: n1-standard-2
   appnodes:
@@ -19,7 +19,7 @@ casl_instances:
     flavor: n1-standard-2
 
 # default preemptibility
-casl_instances:
+cloud_infrastructure:
   masters:
     preemptible: false
   appnodes:
@@ -28,7 +28,7 @@ casl_instances:
     preemptible: false 
 
 # default docker volume size
-casl_instances:
+cloud_infrastructure:
   masters:
     docker_volume_size: 10
   appnodes:
@@ -37,5 +37,5 @@ casl_instances:
     docker_volume_size: 20
 
 # default image name
-casl_instances:
+cloud_infrastructure:
   image_name: rhel7

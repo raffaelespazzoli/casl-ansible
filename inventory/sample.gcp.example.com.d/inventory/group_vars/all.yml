@@ -16,7 +16,7 @@ ansible_become: true
 
 dns_domain: "<REPLACE WITH A VALID ROUTE53 DNS DOMAIN>"
 
-casl_instances:
+cloud_infrastructure:
    region: us-central1
    image_name: rhel7
    masters: 
@@ -69,6 +69,9 @@ rhsm_password: '<REPLACE WITH VALID RHSM PASSWORD>'
 
 # leave commented out if you want to `--auto-attach` a pool
 #rhsm_pool: ''
+
+# Specify the version of docker to use
+docker_version: "1.12.*"
 
 #google specific properties
 service_account_email: <your google service account>

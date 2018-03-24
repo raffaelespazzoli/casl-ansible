@@ -11,18 +11,18 @@
   register: tempdir  
   
 - name: retrieve the configuration file
-  shell: oc rsync {{ pod.stdout }}:/config.yml {{ tmpdir.path }} -n default
+  shell: oc rsync {{ pod.stdout }}:/config.yml {{ tempdir.path }} -n default
     
 - name: replace with google object storage configuration 1
   lineinfile:
-    path: "{{ tmpdir.path }}/config.yml"
+    path: "{{ tempdir.path }}/config.yml"
     regexp: "filesystem"
     state: present
     line: "  gcs:" 
 
 - name: replace with google object storage configuration 2
   lineinfile:
-    path: "{{ tmpdir.path }}/config.yml"
+    path: "{{ tempdir.path }}/config.yml"
     regexp: "rootdirectory"
     state: present
     line: "    bucket: {{ gcloud_registry_bucket_name }}"           
@@ -38,14 +38,14 @@
   when: configmap.stdout  
   
 - name: create configmap with new config
-  shell: oc create configmap {{ gcloud_registry_configmap_name }} --from-file={{ tmpdir.path }}/config.yml -n default
+  shell: oc create configmap {{ gcloud_registry_configmap_name }} --from-file={{ tempdir.path }}/config.yml -n default
   
 - name: save the current number of replicas
   shell: oc get dc docker-registry -o jsonpath='{ .status.replicas }' -n default
   register: replicas  
   
 - name: scale down registry
-  shell: oc scale dc/docker-registry --replicas=0 - default 
+  shell: oc scale dc/docker-registry --replicas=0 -n default 
   
 - name: check if current registry storage exists  
   shell: oc set volume dc/docker-registry -n default | grep registry-storage

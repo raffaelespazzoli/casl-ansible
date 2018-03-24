@@ -66,7 +66,7 @@ clone the ansible repo (you may also want to use a specific verison) and install
 ```
 git clone https://github.com/redhat-cop/casl-ansible
 cd casl-ansible
-ansible-galaxy install -r casl-requirements.yml -p roles
+ansible-galaxy install -r casl-requirements.yml -p galaxy
 ```
 
 ### Configure gcp dynamic inventory
