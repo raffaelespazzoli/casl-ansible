@@ -34,3 +34,4 @@
   shell: gcloud deployment-manager deployments create openshift-{{ gcloud_env }} --config {{ tempdir.path }}/openshift-gcloud.yaml
   when: not deployment.stdout  
 
+
