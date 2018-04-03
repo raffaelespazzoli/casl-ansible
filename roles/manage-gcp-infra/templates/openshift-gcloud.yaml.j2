@@ -1,5 +1,17 @@
 resources:
 
+- name: {{ gcloud_env }}-empty-10g-disk
+  properties: 
+    zone: {{ gcloud_masters_zones[0] }}
+    type: zones/{{ gcloud_masters_zones[0] }}/diskTypes/pd-standard
+    sizeGb: 10
+  type: compute.v1.disk  
+  
+- name: {{ gcloud_env }}-empty-10g-image
+  properties:
+    sourceDisk: $(ref.{{ gcloud_env }}-empty-10g-disk.selfLink)
+  type: compute.v1.image  
+
 # instance templates
 
 - name: {{ gcloud_env }}-master-template
@@ -47,6 +59,7 @@ resources:
         - {{ gcloud_env }}-master
         - {{ gcloud_env }}-node
   type: compute.v1.instanceTemplate
+  
 - name: {{ gcloud_env }}-appnode-template
   properties:
     description: 'appnode-template'
@@ -92,6 +105,7 @@ resources:
         - {{ gcloud_env }}-appnode
         - {{ gcloud_env }}-node
   type: compute.v1.instanceTemplate
+  
 - name: {{ gcloud_env }}-infranode-template
   properties:
     description: 'infranode-template'
@@ -138,6 +152,64 @@ resources:
         - {{ gcloud_env }}-node
   type: compute.v1.instanceTemplate    
   
+- name: {{ gcloud_env }}-cnsnode-template
+  properties:
+    description: 'cnsnode-template'
+    properties:
+      canIpForward: false
+      disks:
+      - autoDelete: true
+        boot: true
+        index: 0
+        initializeParams:
+          diskSizeGb: {{ gcloud_vm_disk_size }}
+          sourceImage: https://www.googleapis.com/compute/v1/projects/rhel-cloud/global/images/family/rhel-7
+          diskType: pd-ssd
+      - autoDelete: true
+        boot: false
+        index: 1
+        deviceName: {{ gcloud_docker_volume_name }}
+        type: SCRATCH
+        initializeParams:
+#          sourceImage: global/images/empty-1g
+#          diskSizeGb: {{ gcloud_cnsnodes_docker_volume_size }}
+          diskType: local-ssd
+      - autoDelete: true
+        boot: false
+        index: 2
+        deviceName: {{ gcloud_cns_volume_name }}
+        type: PERSISTENT
+        initializeParams:
+          sourceImage: $(ref.{{ gcloud_env }}-empty-10g-image.selfLink)
+          diskSizeGb: {{ gcloud_cnsnodes_cns_volume_size }}
+          diskType: {{ gcloud_cnsnodes_cns_disk_type }}          
+      machineType: {{ gcloud_infranodes_flavor }}
+      networkInterfaces:
+      - accessConfigs:
+        - name: external-nat
+          type: ONE_TO_ONE_NAT
+        network: https://www.googleapis.com/compute/v1/projects/{{ gcloud_project_name }}/global/networks/default
+      scheduling:
+        automaticRestart: true
+        onHostMaintenance: MIGRATE
+        preemptible: {{ gcloud_cnsnodes_preemptible }}
+      serviceAccounts:
+      - scopes:
+        - https://www.googleapis.com/auth/cloud.useraccounts.readonly
+        - https://www.googleapis.com/auth/compute
+        - https://www.googleapis.com/auth/devstorage.read_only
+        - https://www.googleapis.com/auth/logging.write
+        - https://www.googleapis.com/auth/monitoring.write
+        - https://www.googleapis.com/auth/service.management.readonly
+        - https://www.googleapis.com/auth/servicecontrol
+      tags:
+        items:
+        - {{ gcloud_env }}
+        - {{ gcloud_env }}-cnsnode
+        - {{ gcloud_env }}-node
+  type: compute.v1.instanceTemplate   
+  
+  
 # group managers
 
 - name: {{ gcloud_env }}-master-igm
@@ -183,6 +255,19 @@ resources:
       - zone: "zones/{{ i }}"
 {% endfor %}  
   type: compute.beta.regionInstanceGroupManager 
+  
+- name: {{ gcloud_env }}-cnsnode-igm
+  properties:
+    baseInstanceName: {{ gcloud_env }}-cnsnode
+    instanceTemplate: $(ref.{{ gcloud_env }}-cnsnode-template.selfLink)
+    targetSize: {{ gcloud_cnsnodes_num }}
+    region: {{ gcloud_region }}
+    distributionPolicy:
+      zones: 
+{% for i in gcloud_cnsnodes_zones %}       
+      - zone: "zones/{{ i }}"
+{% endfor %}  
+  type: compute.beta.regionInstanceGroupManager   
 
 # master networking    
     

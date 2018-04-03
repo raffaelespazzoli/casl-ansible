@@ -102,7 +102,7 @@ hosting_infrastructure: gcp
 dns_domain: $dns_domain
 env_id: <a unique identifier for that gcp project>
 
-casl_instances:
+cloud_infrastructure:
    region: <gcp region>
    masters: 
      count: <# of masters>
@@ -146,26 +146,26 @@ For the host layout see the example and replace the suffixes with your `env_id`.
 | hosting_infrastructure  | no  |  | must be set to `gcp`  |
 | dns_domain  | no  |  | the domain you want to use for this cluster, must be `$dns_domain`  |
 | env_id | no |  | a unique cluster identifier for this gcp project | 
-| casl_instances.region | no |  | the gcp region in which to install the cluster |
-| casl_instances.image_name | yes | `rhel7` | image to use for all the VMs |
-| casl_instances.masters.count | no |  | number of masters |
-| casl_instances.masters.flavor | yes | `n1-standard-2` | type of VM |
-| casl_instances.masters.zones | no |  | array of availability zones in which the masters will be equally spread |
-| casl_instances.masters.name_prefix | yes | `master` | prefix of the master VM names |
-| casl_instances.masters.preemptible  | yes  | `false`  | whether should be preemptible, not recommeded.  |
-| casl_instances.masters.docker_volume_size  | yes  | `10`  | size of the docker volume disk  |
-| casl_instances.appnodes.count | no |  | number of appnodes |
-| casl_instances.appnodes.flavor | yes | `n1-standard-2` | type of VM |
-| casl_instances.appnodes.zones | no |  | array of availability zones in which the appnodes will be equally spread |
-| casl_instances.appnodes.name_prefix | yes | `node` | prefix of the appnode VM names |
-| casl_instances.appnodes.preemptible  | yes  | `false`  | whether should be preemptible, not recommeded.  |
-| casl_instances.appnodes.docker_volume_size  | yes  | `50`  | size of the docker volume disk  |
-| casl_instances.inranodes.count | no |  | number of inranodes |
-| casl_instances.inranodes.flavor | yes | `n1-standard-2` | type of VM |
-| casl_instances.inranodes.zones | no |  | array of availability zones in which the inranodes will be equally spread |
-| casl_instances.inranodes.name_prefix | yes | `inranodes` | prefix of the inranode VM names |
-| casl_instances.inranodes.preemptible  | yes  | `false`  | whether should be preemptible, not recommeded.  |
-| casl_instances.inranodes.docker_volume_size  | yes  | `20`  | size of the docker volume disk  |
+| cloud_infrastructure.region | no |  | the gcp region in which to install the cluster |
+| cloud_infrastructure.image_name | yes | `rhel7` | image to use for all the VMs |
+| cloud_infrastructure.masters.count | no |  | number of masters |
+| cloud_infrastructure.masters.flavor | yes | `n1-standard-2` | type of VM |
+| cloud_infrastructure.masters.zones | no |  | array of availability zones in which the masters will be equally spread |
+| cloud_infrastructure.masters.name_prefix | yes | `master` | prefix of the master VM names |
+| cloud_infrastructure.masters.preemptible  | yes  | `false`  | whether should be preemptible, not recommeded.  |
+| cloud_infrastructure.masters.docker_volume_size  | yes  | `10`  | size of the docker volume disk  |
+| cloud_infrastructure.appnodes.count | no |  | number of appnodes |
+| cloud_infrastructure.appnodes.flavor | yes | `n1-standard-2` | type of VM |
+| cloud_infrastructure.appnodes.zones | no |  | array of availability zones in which the appnodes will be equally spread |
+| cloud_infrastructure.appnodes.name_prefix | yes | `node` | prefix of the appnode VM names |
+| cloud_infrastructure.appnodes.preemptible  | yes  | `false`  | whether should be preemptible, not recommeded.  |
+| cloud_infrastructure.appnodes.docker_volume_size  | yes  | `50`  | size of the docker volume disk  |
+| cloud_infrastructure.inranodes.count | no |  | number of inranodes |
+| cloud_infrastructure.inranodes.flavor | yes | `n1-standard-2` | type of VM |
+| cloud_infrastructure.inranodes.zones | no |  | array of availability zones in which the inranodes will be equally spread |
+| cloud_infrastructure.inranodes.name_prefix | yes | `inranodes` | prefix of the inranode VM names |
+| cloud_infrastructure.inranodes.preemptible  | yes  | `false`  | whether should be preemptible, not recommeded.  |
+| cloud_infrastructure.inranodes.docker_volume_size  | yes  | `20`  | size of the docker volume disk  |
 | service_account_email | no |  | service account to be used when connecting to the Google API |
 | credentials_file  | no  |  | path to the credential file in json format to be used for the connections to the Google  |
 | project_id  | no  | `20` | gcp project id to use  |
@@ -206,6 +206,35 @@ If you need to execute this operation separately, you can run the following comm
 ansible-playbook -i <inventory_dir> --private-key=<private key for $gcp_user> <casl_ansible_dir>/playbooks/openshift/gcp/configure-registry.yml
 ```
 
+## CNS support
+Support to automate the deployment of CNS is available. 
+you need to add an additional section to the `cloud_infrastructure` dictionary to define the cns nodes.
+Here is an example of this section.
+
+```
+   cnsnodes: 
+     count: 3
+     flavor: n1-standard-8
+     zones: 
+     - us-central1-a
+     - us-central1-b
+     - us-central1-f
+     name_prefix: cnsnode          
+     preemptible: false
+     docker_volume_size: 20
+     cns_volume_size: 100
+     cns_disk_type: pd-standard 
+```  
+
+you also need to add the following variable:
+```cns_node_glusterfs_volume: /dev/disk/by-id/google-cns-disk1```
+Also, make sure that the glusterfs group vars contains the following:
+```
+glusterfs_devices:
+- '/dev/disk/by-id/google-cns-disk1'     
+```
+Finally you need to configure your glustefs settings as you would normally do.
+Please refer to the [cns example](../inventory/sample.gcp-cns.example.com.d/inventory) for more details.
 
 # Cleaning up
 In order to clean up run this plyabook

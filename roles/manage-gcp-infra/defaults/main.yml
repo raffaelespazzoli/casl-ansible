@@ -22,3 +22,12 @@ cloud_infrastructure:
     flavor: n1-standard-2
     preemptible: false
     docker_volume_size: 20
+  cnsnodes: 
+    count: 0
+    flavor: n1-standard-2
+    zones: []
+    name_prefix: cnsnode          
+    preemptible: false
+    docker_volume_size: 20
+    cns_volume_size: 100
+    cns_disk_type: pd-ssd     

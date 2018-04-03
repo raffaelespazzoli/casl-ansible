@@ -71,5 +71,5 @@
   tasks:
     - set_fact:
        glusterfs_devices:
-         - "{{ hostvars['localhost'].cns_node_glusterfs_volume }}"
+         - "{{ hostvars['localhost'].cns_node_glusterfs_volume }}"   
 
