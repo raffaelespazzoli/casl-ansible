@@ -29,5 +29,13 @@
   - name: install subscription manager
     package:
       name: subscription-manager
-      state: present             
+      state: present 
+      
+- hosts: cluster_hosts
+  gather_facts: false
+  tasks:
+  - name: install yum-utils
+    package:
+      name: yum-utils
+      state: present
 
