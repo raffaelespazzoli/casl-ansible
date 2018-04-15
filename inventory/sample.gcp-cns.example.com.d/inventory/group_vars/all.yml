@@ -105,3 +105,12 @@ openshift_master_cluster_hostname: master-internal.{{ env_id }}.{{ dns_domain }}
 # openshift_master_default_subdomain must be something like:
 #   <prefix>.{{ env_id }}.{{ dns_domain }}
 openshift_master_default_subdomain: apps.{{ env_id }}.{{ dns_domain }}
+
+#a unique prefix (unsure for what is used)
+openshift_gcp_prefix: "{{ env_id }}"
+
+#your openshift goocle project
+openshift_gcp_project: "{{ project_id }}"
+
+#whether your deployment is multizone.
+openshift_gcp_multizone: true
