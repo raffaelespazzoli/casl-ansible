@@ -171,8 +171,6 @@ resources:
         deviceName: {{ gcloud_docker_volume_name }}
         type: SCRATCH
         initializeParams:
-#          sourceImage: global/images/empty-1g
-#          diskSizeGb: {{ gcloud_cnsnodes_docker_volume_size }}
           diskType: local-ssd
       - autoDelete: true
         boot: false
