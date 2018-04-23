@@ -186,7 +186,7 @@ Checkout the version of casl that you want to use and run the galaxy command:
 ```
 git clone https://github.com/redhat-cop/casl-ansible
 cd casl-ansible
-ansible-galaxy install -r casl-requirements.yml -p roles
+ansible-galaxy install -r casl-requirements.yml -p galaxy
 ```
 at this point you can run the playbook this way:
 ```
