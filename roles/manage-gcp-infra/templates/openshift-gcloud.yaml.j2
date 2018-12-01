@@ -15,6 +15,18 @@ resources:
           diskSizeGb: {{ gcloud_vm_disk_size }}
           sourceImage: https://www.googleapis.com/compute/v1/projects/rhel-cloud/global/images/family/rhel-7
           diskType: pd-ssd
+{% if gcloud_masters_docker_volume_type == 'persistent' %}          
+      - deviceName: {{ gcloud_docker_volume_name }}
+        boot: false           
+        index: 1
+        kind: compute#attachedDisk
+        type: persistent
+        autoDelete: true
+        initializeParams:
+          diskType: pd-ssd
+          diskSizeGb: {{ gcloud_masters_docker_volume_size }}                
+{% endif %}
+{% if gcloud_masters_docker_volume_type == 'ephemeral' %}          
       - autoDelete: true
         boot: false
         index: 1
@@ -22,6 +34,7 @@ resources:
         type: SCRATCH
         initializeParams:
           diskType: local-ssd
+{% endif %}          
       machineType: {{ gcloud_masters_flavor }}
       networkInterfaces:
       - accessConfigs:
@@ -60,6 +73,18 @@ resources:
           diskSizeGb: {{ gcloud_vm_disk_size }}
           sourceImage: https://www.googleapis.com/compute/v1/projects/rhel-cloud/global/images/family/rhel-7
           diskType: pd-ssd
+{% if gcloud_appnodes_docker_volume_type == 'persistent' %}          
+      - deviceName: {{ gcloud_docker_volume_name }}
+        boot: false           
+        index: 1
+        kind: compute#attachedDisk
+        type: persistent
+        autoDelete: true
+        initializeParams:
+          diskType: pd-standard
+          diskSizeGb: {{ gcloud_appnodes_docker_volume_size }}                
+{% endif %}
+{% if gcloud_appnodes_docker_volume_type == 'ephemeral' %}          
       - autoDelete: true
         boot: false
         index: 1
@@ -67,6 +92,7 @@ resources:
         type: SCRATCH
         initializeParams:
           diskType: local-ssd
+{% endif %}
       machineType: {{ gcloud_appnodes_flavor }}
       networkInterfaces:
       - accessConfigs:
@@ -105,6 +131,18 @@ resources:
           diskSizeGb: {{ gcloud_vm_disk_size }}
           sourceImage: https://www.googleapis.com/compute/v1/projects/rhel-cloud/global/images/family/rhel-7
           diskType: pd-ssd
+{% if gcloud_infranodes_docker_volume_type == 'persistent' %}          
+      - deviceName: {{ gcloud_docker_volume_name }}
+        boot: false           
+        index: 1
+        kind: compute#attachedDisk
+        type: persistent
+        autoDelete: true
+        initializeParams:
+          diskType: pd-standard
+          diskSizeGb: {{ gcloud_infranodes_docker_volume_size }}                
+{% endif %}
+{% if gcloud_infranodes_docker_volume_type == 'ephemeral' %}          
       - autoDelete: true
         boot: false
         index: 1
@@ -112,6 +150,7 @@ resources:
         type: SCRATCH
         initializeParams:
           diskType: local-ssd
+{% endif %}
       machineType: {{ gcloud_infranodes_flavor }}
       networkInterfaces:
       - accessConfigs:

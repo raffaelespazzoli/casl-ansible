@@ -12,13 +12,16 @@ cloud_infrastructure:
     preemptible: false
   # default docker volume size  
     docker_volume_size: 10
+    docker_volume_type: persistent
   appnodes:
     name_prefix: node
     flavor: n1-standard-2
     preemptible: false
     docker_volume_size: 50
+    docker_volume_type: persistent
   infranodes:
     name_prefix: infranode
     flavor: n1-standard-2
     preemptible: false
     docker_volume_size: 20
+    docker_volume_type: persistent

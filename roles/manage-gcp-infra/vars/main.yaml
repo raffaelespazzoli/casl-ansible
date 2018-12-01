@@ -30,6 +30,10 @@ gcloud_masters_docker_volume_size: "{{ cloud_infrastructure.masters.docker_volum
 gcloud_appnodes_docker_volume_size: "{{ cloud_infrastructure.appnodes.docker_volume_size }}"
 gcloud_infranodes_docker_volume_size: "{{ cloud_infrastructure.infranodes.docker_volume_size }}"
 
+gcloud_masters_docker_volume_type: "{{ cloud_infrastructure.masters.docker_volume_type }}"
+gcloud_appnodes_docker_volume_type: "{{ cloud_infrastructure.appnodes.docker_volume_type }}"
+gcloud_infranodes_docker_volume_type: "{{ cloud_infrastructure.infranodes.docker_volume_type }}"
+
 gcloud_region: "{{ cloud_infrastructure.region }}"
 gcloud_project_name: "{{ project_id }}"
 gcloud_managed_zone: "{{ dns_domain }}"
@@ -37,7 +41,7 @@ gcloud_env: "{{ env_id }}"
 gcloud_master_external_fqdn: "{{ openshift_master_cluster_public_hostname }}"
 gcloud_master_internal_fqdn: "{{ openshift_master_cluster_hostname }}"
 gcloud_infranode_wildcard_fqdn: "*.{{ openshift_master_default_subdomain }}"
-gcloud_docker_volume_name: docker-storage
+gcloud_docker_volume_name: "{{ docker_volume_name }}"
 gcloud_vm_disk_size: 50
 gcloud_registry_configmap_name: registry-config
 gcloud_registry_bucket_name: "{{ google_registry_bucket_name }}" 
